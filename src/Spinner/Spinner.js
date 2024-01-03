@@ -21,10 +21,15 @@ function Spinner() {
   const SPINNER_DIRECTION_RIGHT = 'SPINNER_DIRECTION_RIGHT';
   const ARROW_LEFT = 'ArrowLeft';
   const ARROW_RIGHT = 'ArrowRight';
+  const ARROW_UP = 'ArrowUp';
+  const ARROW_DOWN = 'ArrowDown';
+  const MAX_MODE = MODE_VERY_FAST;
+  const MIN_MODE = MODE_VERY_FAST_REVERSE;
   const [value, setValue] = useState("Click to Start");
   const [textField, setTextField] = useState("");
   const [duration, setDuration] = useState(0);
   const [spinnerMode, setSpinnerMode] = useState(MODE_STOPPED);
+  const [spinnerDirection, setSpinnerDirection] = useState(SPINNER_DIRECTION_RIGHT);
   const [clickDirection, setClickDirection] = useState(CLICK_DIRECTION_RIGHT);
 
   useEffect(() => {
@@ -34,7 +39,8 @@ function Spinner() {
   useEffect(() => {
     var appLogo = document.getElementById("appLogo");
     appLogo.style.animationDuration = duration + "s";
-  }, [duration]);
+    appLogo.className = spinnerDirection === SPINNER_DIRECTION_RIGHT ? 'App-logo' : 'App-logo-reverse';
+  }, [duration, spinnerDirection]);
 
   const advanceState = () => {
     let newVal = spinnerMode;
@@ -52,11 +58,11 @@ function Spinner() {
     let newVal = spinnerMode;
     newVal = arrow === ARROW_RIGHT ? newVal + 1 : newVal - 1;
     const newDirection = arrow === ARROW_RIGHT ? CLICK_DIRECTION_RIGHT : CLICK_DIRECTION_LEFT;
-    if (newVal >= 5) {
-        newVal = 5;
+    if (newVal >= MAX_MODE) {
+        newVal = MAX_MODE;
     }
-    if (newVal <= 0) {
-        newVal = 0;
+    if (newVal <= MIN_MODE) {
+        newVal = MIN_MODE;
     }
     setClickDirection(newDirection);
     setSpinnerMode(newVal);
@@ -66,7 +72,43 @@ function Spinner() {
     let directText = '';
     let msg = '';
     let duration = 0;
+    let spinnerDir = SPINNER_DIRECTION_RIGHT;
     switch (mode) {
+      case MODE_VERY_FAST_REVERSE:
+        console.log('*** MODE_VERY_FAST_REVERSE ***');
+        directText = '<<<<<';
+        msg = "Very Fast (R)";
+        spinnerDir = SPINNER_DIRECTION_LEFT;
+        duration = 0.3;
+        break;
+      case MODE_FAST_REVERSE:
+        console.log('*** MODE_FAST_REVERSE ***');
+        directText = '<<<<';
+        msg = "Fast (R)";
+        spinnerDir = SPINNER_DIRECTION_LEFT;
+        duration = 0.4;
+        break;
+      case MODE_MEDIUM_REVERSE:
+        console.log('*** MODE_MEDIUM_REVERSE ***');
+        directText = '<<<';
+        msg = "Medium (R)";
+        spinnerDir = SPINNER_DIRECTION_LEFT;
+        duration = 0.75;
+        break
+      case MODE_SLOW_REVERSE:
+        console.log('*** MODE_SLOW_REVERSE ***');
+        directText = '<<';
+        msg = "Slow (R)";
+        spinnerDir = SPINNER_DIRECTION_LEFT
+        duration = 2;
+        break
+      case MODE_VERY_SLOW_REVERSE:
+        console.log('*** MODE_VERY_SLOW_REVERSE ***');
+        directText = '<';
+        msg = "Very Slow (R)";
+        spinnerDir = SPINNER_DIRECTION_LEFT;
+        duration = 5.5;
+        break;
       case MODE_STOPPED:
         console.log('*** MODE_STOPPED ***');
         directText = '||';
@@ -77,30 +119,35 @@ function Spinner() {
         console.log('*** MODE_VERY_SLOW ***');
         directText = '>';
         msg = "Very Slow";
+        spinnerDir = SPINNER_DIRECTION_RIGHT;
         duration = 5.5;
         break;
       case MODE_SLOW:
         console.log('*** MODE_SLOW ***');
         directText = '>>';
         msg = "Slow";
+        spinnerDir = SPINNER_DIRECTION_RIGHT;
         duration = 2;
         break
       case MODE_MEDIUM:
         console.log('*** MODE_MEDIUM ***');
         directText = '>>>';
         msg = "Medium";
+        spinnerDir = SPINNER_DIRECTION_RIGHT;
         duration = 0.75;
         break
       case MODE_FAST:
         console.log('*** MODE_FAST ***');
         directText = '>>>>';
         msg = "Fast";
+        spinnerDir = SPINNER_DIRECTION_RIGHT;
         duration = 0.4;
         break;
       case MODE_VERY_FAST:
         console.log('*** MODE_VERY_FAST ***');
         directText = '>>>>>';
         msg = "Very Fast";
+        spinnerDir = SPINNER_DIRECTION_RIGHT;
         duration = 0.3;
         break;
       default:
@@ -113,17 +160,33 @@ function Spinner() {
     setValue(directText);
     setTextField(msg);
     setDuration(duration);
+    setSpinnerDirection(spinnerDir);
   }
 
   const onKeyDown = (e) => {
+    var element = document.getElementById("colorButton");
     switch (e.key) {
       case ARROW_RIGHT:
         console.log('*** right arrow ***');
         advanceStateWithArrows(ARROW_RIGHT);
+        element.className = "color-button";
         break;
       case ARROW_LEFT:
         console.log('*** left arrow ***');
         advanceStateWithArrows(ARROW_LEFT);
+        element.className = "color-button";
+        break;
+      case ARROW_UP:
+        console.log('*** up arrow ***');
+        e.preventDefault();
+        element.style.backgroundColor = element.style.backgroundColor === "grey" ? "white" : "grey";
+        element.className = "color-button color-button-nudge-up";
+        break;
+      case ARROW_DOWN:
+        console.log('*** down arrow ***');
+        e.preventDefault();
+        element.style.backgroundColor = element.style.backgroundColor === "grey" ? "white" : "grey";
+        element.className = "color-button color-button-nudge-down";
         break;
     }
   }
@@ -132,7 +195,7 @@ function Spinner() {
     var element = document.getElementById("colorButton");
     element.style.backgroundColor =
         element.style.backgroundColor === "grey" ? "white" : "grey";
-    element.className = "color-button-expanded";
+    //element.className = "color-button-expanded";
     advanceState();
   };
 
