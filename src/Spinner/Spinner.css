@@ -1,5 +1,5 @@
 .Spinner {
-    text-align: center;
+  text-align: center;
 }
 
 code {
@@ -62,11 +62,37 @@ code {
     }
 }
 
+@keyframes MoveUpDown {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  @keyframes MoveDownUp {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(10px);
+    }
+  }
+
 .color-button {
     width: 150px;
     height: 185px;
     padding-top: 15px;
-    border: 5px solid grey;
+    border: 5px solid darkgrey;
+}
+
+.color-button-nudge-up {
+  animation: MoveUpDown 0.25s ease-in-out 1;
+}
+
+.color-button-nudge-down {
+  animation: MoveDownUp 0.25s ease-in-out 1;
 }
 
 .color-button-expanded {
